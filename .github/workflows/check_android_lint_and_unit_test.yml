@@ -1,0 +1,22 @@
+name: Check androidLint & unitTest
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  set-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+      - name: Setup JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'corretto'
+          cache: gradle
+      - name: Run android lint
+        run: ./gradlew lintDebug
+      - name: Run unit test
+        run: ./gradlew testDebugUnitTest --stacktrace

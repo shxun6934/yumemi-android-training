@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  set-up:
+  check-android-lint-and-unit-test:
     runs-on: ubuntu-latest
     steps:
       - name: Check out

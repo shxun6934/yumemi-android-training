@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation(project(path = ":use_case"))
+    implementation(project(path = ":model"))
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")

@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation(project(path = ":api"))
+    implementation(project(path = ":model"))
 
     testImplementation("junit:junit:4.13.2")
 }

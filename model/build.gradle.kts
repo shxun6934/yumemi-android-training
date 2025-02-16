@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "jp.co.yumemi.use_case"
+    namespace = "jp.co.yumemi.model"
     compileSdk = 33
 
     defaultConfig {
@@ -32,8 +32,5 @@ android {
 }
 
 dependencies {
-    implementation(project(path = ":repository"))
-    implementation(project(path = ":model"))
-
     testImplementation("junit:junit:4.13.2")
 }

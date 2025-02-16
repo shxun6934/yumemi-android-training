@@ -39,6 +39,7 @@ dependencies {
     implementation(project(path = ":ui"))
     implementation(project(path = ":repository"))
     implementation(project(path = ":use_case"))
+    implementation(project(path = ":model"))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

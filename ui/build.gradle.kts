@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(project(path = ":repository"))
+    implementation(project(path = ":use_case"))
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")

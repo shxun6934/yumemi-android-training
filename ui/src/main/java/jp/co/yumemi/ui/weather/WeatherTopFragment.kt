@@ -1,4 +1,4 @@
-package jp.co.yumemi.droidtraining.weather
+package jp.co.yumemi.ui.weather
 
 import android.os.Bundle
 import android.view.LayoutInflater

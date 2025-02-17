@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import jp.co.yumemi.droidtraining.R
+import jp.co.yumemi.ui.R
 
 class WeatherTopFragment : Fragment() {
 

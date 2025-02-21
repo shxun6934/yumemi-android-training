@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sunny">#FF0000</color>
+    <color name="cloudy">#888888</color>
+    <color name="rainy">#0000FF</color>
+    <color name="snow">#44EEFF</color>
+</resources>

@@ -1,11 +1,13 @@
 package jp.co.yumemi.ui.weather
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.R
@@ -22,13 +24,36 @@ class WeatherTopFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val useCase = GetWeatherUseCase(requireContext())
+        val context = requireContext()
+        val useCase = GetWeatherUseCase(context)
 
-        setWeatherImage(view, useCase.get())
+        getCurrentWeather(useCase, context, view)
 
         view.findViewById<Button>(R.id.reload_button).setOnClickListener {
-            setWeatherImage(view, useCase.get())
+            getCurrentWeather(useCase, context, view)
         }
+    }
+
+    private fun getCurrentWeather(useCase: GetWeatherUseCase, context: Context, view: View) {
+        useCase.get(
+            onSuccess = { currentWeather ->
+                setWeatherImage(view, currentWeather)
+            },
+            onFailure = { _ ->
+                val dialog = AlertDialog.Builder(context)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.error_message)
+                    .setNegativeButton(R.string.close) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton(R.string.reload) { dialog, _ ->
+                        getCurrentWeather(useCase, context, view)
+                        dialog.dismiss()
+                    }
+                    .create()
+                dialog.show()
+            }
+        )
     }
 
     private fun setWeatherImage(view: View, currentWeather: Weather) {

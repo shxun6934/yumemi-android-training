@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="weather_image_description">Current weather image</string>
-    <string name="reload">RELOAD</string>
-    <string name="next">NEXT</string>
+    <string name="RELOAD">RELOAD</string>
+    <string name="NEXT">NEXT</string>
+    <string name="error">Error</string>
+    <string name="error_message">エラーが発生しました。</string>
+    <string name="close">Close</string>
+    <string name="reload">Reload</string>
 </resources>

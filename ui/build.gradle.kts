@@ -29,6 +29,9 @@ android {
     kotlinOptions {
         jvmTarget = JvmTarget.JVM_1_8.target
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {

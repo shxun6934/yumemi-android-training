@@ -1,58 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tool="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/weather_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/weather_image_description"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.5"
-        tool:src="@drawable/ic_sunny"
-        tool:tint="@color/sunny" />
+    <data>
 
-    <TextView
-        android:id="@+id/text1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/text2"
-        app:layout_constraintStart_toStartOf="@id/weather_image"
-        app:layout_constraintTop_toBottomOf="@id/weather_image" />
+        <import type="jp.co.yumemi.ui.extension.WeatherExtension" />
 
-    <TextView
-        android:id="@+id/text2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@id/weather_image"
-        app:layout_constraintStart_toEndOf="@id/text1"
-        app:layout_constraintTop_toBottomOf="@id/weather_image" />
+        <variable
+            name="weather"
+            type="jp.co.yumemi.model.weather.Weather" />
+    </data>
 
-    <Button
-        android:id="@+id/reload_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="@string/RELOAD"
-        app:layout_constraintEnd_toEndOf="@id/text1"
-        app:layout_constraintStart_toStartOf="@id/text1"
-        app:layout_constraintTop_toBottomOf="@id/text1" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="@string/NEXT"
-        app:layout_constraintEnd_toEndOf="@id/text2"
-        app:layout_constraintStart_toStartOf="@id/text2"
-        app:layout_constraintTop_toBottomOf="@id/text2" />
+        <ImageView
+            android:id="@+id/weather_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/weather_image_description"
+            android:src="@{WeatherExtension.INSTANCE.image(weather, context)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            app:tint="@{WeatherExtension.INSTANCE.color(weather)}"
+            tool:src="@drawable/ic_sunny"
+            tool:tint="@color/sunny" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/text2"
+            app:layout_constraintStart_toStartOf="@id/weather_image"
+            app:layout_constraintTop_toBottomOf="@id/weather_image" />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/weather_image"
+            app:layout_constraintStart_toEndOf="@id/text1"
+            app:layout_constraintTop_toBottomOf="@id/weather_image" />
+
+        <Button
+            android:id="@+id/reload_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="@string/RELOAD"
+            app:layout_constraintEnd_toEndOf="@id/text1"
+            app:layout_constraintStart_toStartOf="@id/text1"
+            app:layout_constraintTop_toBottomOf="@id/text1" />
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="@string/NEXT"
+            app:layout_constraintEnd_toEndOf="@id/text2"
+            app:layout_constraintStart_toStartOf="@id/text2"
+            app:layout_constraintTop_toBottomOf="@id/text2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

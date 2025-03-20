@@ -30,6 +30,8 @@ class WeatherTopFragment : Fragment() {
         val context = requireContext()
         val useCase = GetWeatherUseCase(context)
 
+        // 初期表示時に例外が発生するとクラッシュするため、初期値を設定
+        setWeatherImage(Weather.SUNNY)
         getCurrentWeather(useCase, context)
 
         binding.reloadButton.setOnClickListener {
@@ -60,26 +62,6 @@ class WeatherTopFragment : Fragment() {
     }
 
     private fun setWeatherImage(currentWeather: Weather) {
-        binding.weatherImage.apply {
-            setImageResource(
-                when (currentWeather) {
-                    Weather.SUNNY -> R.drawable.ic_sunny
-                    Weather.CLOUDY -> R.drawable.ic_cloudy
-                    Weather.RAINY -> R.drawable.ic_rainy
-                    else -> R.drawable.ic_snow
-                }
-            )
-            setColorFilter(
-                resources.getColor(
-                    when (currentWeather) {
-                        Weather.SUNNY -> R.color.sunny
-                        Weather.CLOUDY -> R.color.cloudy
-                        Weather.RAINY -> R.color.rainy
-                        else -> R.color.snow
-                    },
-                    null
-                )
-            )
-        }
+        binding.weather = currentWeather
     }
 }

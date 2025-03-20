@@ -1,7 +1,6 @@
 package jp.co.yumemi.use_case.weather
 
 import android.content.Context
-import jp.co.yumemi.model.error.ApiError
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.repository.weather.WeatherRepository
 import kotlin.random.Random

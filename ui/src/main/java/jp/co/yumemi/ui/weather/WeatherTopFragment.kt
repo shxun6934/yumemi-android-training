@@ -5,21 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.R
+import jp.co.yumemi.ui.databinding.FragmentWeatherTopBinding
 import jp.co.yumemi.use_case.weather.GetWeatherUseCase
 
 class WeatherTopFragment : Fragment() {
+    private lateinit var binding: FragmentWeatherTopBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_weather_top, container, false)
+    ): View {
+        binding = FragmentWeatherTopBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -27,17 +30,17 @@ class WeatherTopFragment : Fragment() {
         val context = requireContext()
         val useCase = GetWeatherUseCase(context)
 
-        getCurrentWeather(useCase, context, view)
+        getCurrentWeather(useCase, context)
 
-        view.findViewById<Button>(R.id.reload_button).setOnClickListener {
-            getCurrentWeather(useCase, context, view)
+        binding.reloadButton.setOnClickListener {
+            getCurrentWeather(useCase, context)
         }
     }
 
-    private fun getCurrentWeather(useCase: GetWeatherUseCase, context: Context, view: View) {
+    private fun getCurrentWeather(useCase: GetWeatherUseCase, context: Context) {
         useCase.get(
             onSuccess = { currentWeather ->
-                setWeatherImage(view, currentWeather)
+                setWeatherImage(currentWeather)
             },
             onFailure = { _ ->
                 val dialog = AlertDialog.Builder(context)
@@ -47,7 +50,7 @@ class WeatherTopFragment : Fragment() {
                         dialog.dismiss()
                     }
                     .setPositiveButton(R.string.reload) { dialog, _ ->
-                        getCurrentWeather(useCase, context, view)
+                        getCurrentWeather(useCase, context)
                         dialog.dismiss()
                     }
                     .create()
@@ -56,8 +59,8 @@ class WeatherTopFragment : Fragment() {
         )
     }
 
-    private fun setWeatherImage(view: View, currentWeather: Weather) {
-        view.findViewById<ImageView>(R.id.weather_image).apply {
+    private fun setWeatherImage(currentWeather: Weather) {
+        binding.weatherImage.apply {
             setImageResource(
                 when (currentWeather) {
                     Weather.SUNNY -> R.drawable.ic_sunny

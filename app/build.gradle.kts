@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
 }
 
 android {
@@ -32,9 +31,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = JvmTarget.JVM_1_8.target
-    }
-    buildFeatures {
-        dataBinding = true
     }
 }
 

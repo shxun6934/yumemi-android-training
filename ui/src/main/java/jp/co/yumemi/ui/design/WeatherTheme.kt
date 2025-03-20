@@ -35,8 +35,7 @@ fun WeatherTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colors = if (isSystemInDarkTheme()) darkColors else lightColors,
         typography = typography,
-        shapes = shapes
-    ) {
-        content()
-    }
+        shapes = shapes,
+        content = content
+    )
 }

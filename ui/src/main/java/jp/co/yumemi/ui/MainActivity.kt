@@ -5,11 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -28,6 +26,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.design.WeatherTheme
 import jp.co.yumemi.ui.weather.ActionButtons
+import jp.co.yumemi.ui.weather.WeatherErrorDialog
 import jp.co.yumemi.ui.weather.WeatherInfo
 import jp.co.yumemi.ui.weather.WeatherUiState
 import jp.co.yumemi.use_case.weather.GetWeatherUseCase
@@ -109,47 +108,18 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (showErrorDialog) {
-                    AlertDialog(
-                        onDismissRequest = {
+                    WeatherErrorDialog(
+                        onDismiss = {
                             uiState = it.copy(showErrorDialog = false)
                         },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    useCase.get(
-                                        onSuccess = { weather ->
-                                            uiState = successWeatherUiState(weather)
-                                        },
-                                        onFailure = { _ ->
-                                            uiState = failedWeatherUiState(it)
-                                        }
-                                    )
+                        onConfirm = {
+                            useCase.get(
+                                onSuccess = { weather ->
+                                    uiState = successWeatherUiState(weather)
+                                },
+                                onFailure = { _ ->
+                                    uiState = failedWeatherUiState(it)
                                 }
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.reload)
-                                )
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    uiState = it.copy(showErrorDialog = false)
-                                }
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.close)
-                                )
-                            }
-                        },
-                        title = {
-                            Text(
-                                text = stringResource(R.string.error)
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(R.string.error_message)
                             )
                         }
                     )

@@ -15,8 +15,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.R
+import jp.co.yumemi.ui.design.WeatherTheme
 
 @Composable
 fun WeatherInfo(
@@ -74,5 +76,45 @@ fun WeatherInfo(
                     .aspectRatio(1f)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewSunnyWeatherInfo() {
+    WeatherTheme {
+        WeatherInfo(
+            weather = Weather.SUNNY
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewCloudyWeatherInfo() {
+    WeatherTheme {
+        WeatherInfo(
+            weather = Weather.CLOUDY
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewRainyWeatherInfo() {
+    WeatherTheme {
+        WeatherInfo(
+            weather = Weather.RAINY
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewSnowWeatherInfo() {
+    WeatherTheme {
+        WeatherInfo(
+            weather = Weather.SNOW
+        )
     }
 }

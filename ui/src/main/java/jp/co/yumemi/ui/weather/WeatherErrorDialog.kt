@@ -6,7 +6,9 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import jp.co.yumemi.ui.R
+import jp.co.yumemi.ui.design.WeatherTheme
 
 @Composable
 fun WeatherErrorDialog(
@@ -46,4 +48,15 @@ fun WeatherErrorDialog(
             )
         }
     )
+}
+
+@Preview
+@Composable
+private fun PreviewWeatherErrorDialog() {
+    WeatherTheme {
+        WeatherErrorDialog(
+            onDismiss = {},
+            onConfirm = {}
+        )
+    }
 }

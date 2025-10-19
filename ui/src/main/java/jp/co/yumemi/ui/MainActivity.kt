@@ -3,7 +3,12 @@ package jp.co.yumemi.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -16,13 +21,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.design.WeatherTheme
@@ -58,75 +62,25 @@ class MainActivity : ComponentActivity() {
             onDispose {}
         }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(text = stringResource(id = R.string.app_name))
+        WeatherTopContent(
+            uiState = uiState,
+            onClickReload = {
+                useCase.get(
+                    onSuccess = { weather ->
+                        uiState = successWeatherUiState(weather)
+                    },
+                    onFailure = { _ ->
+                        uiState = failedWeatherUiState(uiState as? WeatherUiState.Display)
                     }
                 )
+            },
+            onClickNext = {
+                // TODO: Handle next action
+            },
+            onDismiss = {
+                uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: uiState
             }
-        ) { padding ->
-            (uiState as? WeatherUiState.Display)?.let {
-                val weather = it.weather
-                val showErrorDialog = it.showErrorDialog
-
-                ConstraintLayout(
-                    modifier = Modifier
-                        .padding(padding)
-                        .fillMaxSize()
-                ) {
-                    val (weatherInfo, actionButtons) = createRefs()
-
-                    WeatherInfo(
-                        modifier = Modifier.constrainAs(weatherInfo) {
-                            linkTo(top = parent.top, bottom = parent.bottom)
-                            linkTo(start = parent.start, end = parent.end)
-                            width = Dimension.percent(0.5f)
-                            height = Dimension.wrapContent
-                        },
-                        weather = weather
-                    )
-                    ActionButtons(
-                        modifier = Modifier.constrainAs(actionButtons) {
-                            top.linkTo(weatherInfo.bottom, margin = 80.dp)
-                            linkTo(start = weatherInfo.start, end = weatherInfo.end)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.wrapContent
-                        },
-                        onReload = {
-                            useCase.get(
-                                onSuccess = { weather ->
-                                    uiState = successWeatherUiState(weather)
-                                },
-                                onFailure = { _ ->
-                                    uiState = failedWeatherUiState(it)
-                                }
-                            )
-                        },
-                        onNext = {}
-                    )
-                }
-
-                if (showErrorDialog) {
-                    WeatherErrorDialog(
-                        onDismiss = {
-                            uiState = it.copy(showErrorDialog = false)
-                        },
-                        onConfirm = {
-                            useCase.get(
-                                onSuccess = { weather ->
-                                    uiState = successWeatherUiState(weather)
-                                },
-                                onFailure = { _ ->
-                                    uiState = failedWeatherUiState(it)
-                                }
-                            )
-                        }
-                    )
-                }
-            }
-        }
+        )
 
         LaunchedEffect(true) {
             useCase.get(
@@ -140,11 +94,70 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Composable
+    private fun WeatherTopContent(
+        uiState: WeatherUiState,
+        onClickReload: () -> Unit,
+        onClickNext: () -> Unit,
+        onDismiss: () -> Unit,
+        onConfirm: () -> Unit = onClickReload
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(text = stringResource(id = R.string.app_name))
+                    }
+                )
+            }
+        ) { padding ->
+            (uiState as? WeatherUiState.Display)?.let {
+                val weather = it.weather
+                val showErrorDialog = it.showErrorDialog
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    WeatherInfo(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
+                        weather = weather
+                    )
+                    Spacer(modifier = Modifier.height(80.dp))
+                    ActionButtons(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
+                        onReload = onClickReload,
+                        onNext = onClickNext
+                    )
+                }
+
+                if (showErrorDialog) {
+                    WeatherErrorDialog(
+                        onDismiss = onDismiss,
+                        onConfirm = onConfirm
+                    )
+                }
+            }
+        }
+    }
+
     @Preview
     @Composable
-    private fun PreviewWeatherTopScreen() {
+    private fun PreviewWeatherTopContent() {
+        val uiState = WeatherUiState.Display(weather = Weather.SUNNY, showErrorDialog = false)
+
         WeatherTheme {
-            WeatherTopScreen()
+            WeatherTopContent(
+                uiState = uiState,
+                onClickReload = {},
+                onClickNext = {},
+                onDismiss = {}
+            )
         }
     }
 

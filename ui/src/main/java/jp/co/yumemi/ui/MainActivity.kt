@@ -17,24 +17,22 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.design.WeatherTheme
+import jp.co.yumemi.ui.weather.WeatherViewModel
 import jp.co.yumemi.ui.weather.ActionButtons
 import jp.co.yumemi.ui.weather.WeatherErrorDialog
 import jp.co.yumemi.ui.weather.WeatherInfo
 import jp.co.yumemi.ui.weather.WeatherUiState
-import jp.co.yumemi.use_case.weather.GetWeatherUseCase
 
 class MainActivity : ComponentActivity() {
 
@@ -49,10 +47,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun WeatherTopScreen() {
-        var uiState: WeatherUiState by remember { mutableStateOf(WeatherUiState.Loading) }
-        val useCase = GetWeatherUseCase(LocalContext.current)
-
+    private fun WeatherTopScreen(
+        viewModel: WeatherViewModel = viewModel(factory = WeatherViewModel.Factory)
+    ) {
+        val uiState by viewModel.uiState.collectAsState()
         val systemUiController = rememberSystemUiController()
         val statusBarColor = MaterialTheme.colors.primaryVariant
 
@@ -64,33 +62,15 @@ class MainActivity : ComponentActivity() {
 
         WeatherTopContent(
             uiState = uiState,
-            onClickReload = {
-                useCase.get(
-                    onSuccess = { weather ->
-                        uiState = successWeatherUiState(weather)
-                    },
-                    onFailure = { _ ->
-                        uiState = failedWeatherUiState(uiState as? WeatherUiState.Display)
-                    }
-                )
-            },
+            onClickReload = viewModel::getWeather,
             onClickNext = {
                 // TODO: Handle next action
             },
-            onDismiss = {
-                uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: uiState
-            }
+            onDismiss = viewModel::dismissErrorDialog
         )
 
         LaunchedEffect(true) {
-            useCase.get(
-                onSuccess = { weather ->
-                    uiState = successWeatherUiState(weather)
-                },
-                onFailure = {
-                    uiState = failedWeatherUiState(null)
-                }
-            )
+            viewModel.getWeather()
         }
     }
 
@@ -160,11 +140,4 @@ class MainActivity : ComponentActivity() {
             )
         }
     }
-
-    private fun successWeatherUiState(weather: Weather): WeatherUiState.Display =
-        WeatherUiState.Display(weather = weather, showErrorDialog = false)
-
-    private fun failedWeatherUiState(uiState: WeatherUiState.Display?): WeatherUiState.Display =
-        uiState?.copy(showErrorDialog = true)
-            ?: WeatherUiState.Display(weather = null, showErrorDialog = true)
 }

@@ -1,39 +1,33 @@
 package jp.co.yumemi.ui.weather
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import jp.co.yumemi.use_case.weather.GetWeatherUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class WeatherViewModel(
     private val useCase: GetWeatherUseCase
 ): ViewModel() {
-    private var _uiState: MutableStateFlow<WeatherUiState> = MutableStateFlow(WeatherUiState.Loading)
-    val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
+    var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
+        private set
 
     fun getWeather() {
         useCase.get(
             onSuccess = { weather ->
-                _uiState.value = WeatherUiState.Display(weather = weather, showErrorDialog = false)
+                uiState = WeatherUiState.Display(weather = weather, showErrorDialog = false)
             },
             onFailure = { _ ->
-                _uiState.update { currentUiState ->
-                    (currentUiState as? WeatherUiState.Display)?.copy(showErrorDialog = true)
-                        ?: WeatherUiState.Display(weather = null, showErrorDialog = true)
-                }
+                uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = true)
+                    ?: WeatherUiState.Display(weather = null, showErrorDialog = true)
             }
         )
     }
 
     fun dismissErrorDialog() {
-        _uiState.update { currentUiState ->
-            (currentUiState as? WeatherUiState.Display)?.copy(showErrorDialog = false)
-                ?: currentUiState
-        }
+        uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: uiState
     }
 
     companion object {

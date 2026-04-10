@@ -4,11 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
+import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.use_case.weather.GetWeatherUseCase
+import javax.inject.Inject
 
-class WeatherViewModel(
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
     private val useCase: GetWeatherUseCase
 ): ViewModel() {
     var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
@@ -28,18 +29,5 @@ class WeatherViewModel(
 
     fun dismissErrorDialog() {
         uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: uiState
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                val application = extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
-                    ?: throw IllegalStateException("Application not found in extras")
-
-                return WeatherViewModel(
-                    useCase = GetWeatherUseCase(context = application)
-                ) as T
-            }
-        }
     }
 }

@@ -3,7 +3,6 @@ package jp.co.yumemi.repository.weather
 import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.every
 import io.mockk.mockk
-import jp.co.yumemi.api.UnknownException
 import jp.co.yumemi.model.error.ApiError
 import jp.co.yumemi.model.weather.Weather
 import org.junit.Before
@@ -18,12 +17,12 @@ class WeatherRepositoryTest {
 
     private val random = mockk<Random>()
 
-    private lateinit var weatherRepository: WeatherRepository
+    private lateinit var weatherRepository: WeatherRepositoryImpl
 
     @Before
     fun setup() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        weatherRepository = WeatherRepository(context, random)
+        weatherRepository = WeatherRepositoryImpl(context, random)
     }
 
     @Test

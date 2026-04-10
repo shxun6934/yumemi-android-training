@@ -1,14 +1,12 @@
 package jp.co.yumemi.use_case.weather
 
-import android.content.Context
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.repository.weather.WeatherRepository
-import kotlin.random.Random
+import javax.inject.Inject
 
-class GetWeatherUseCase(context: Context, random: Random = Random.Default) {
-
-    private val repository: WeatherRepository = WeatherRepository(context, random)
-
+class GetWeatherUseCase @Inject constructor(
+    private val repository: WeatherRepository
+) {
     fun get(
         onSuccess: (Weather) -> Unit,
         onFailure: (Throwable) -> Unit

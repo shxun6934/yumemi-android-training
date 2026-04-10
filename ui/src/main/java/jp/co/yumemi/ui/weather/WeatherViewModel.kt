@@ -1,33 +1,33 @@
 package jp.co.yumemi.ui.weather
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import jp.co.yumemi.use_case.weather.GetWeatherUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class WeatherViewModel(
     private val useCase: GetWeatherUseCase
 ): ViewModel() {
-    var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
-        private set
+    private var _uiState: MutableStateFlow<WeatherUiState> = MutableStateFlow(WeatherUiState.Loading)
+    val uiState: StateFlow<WeatherUiState> get() = _uiState.asStateFlow()
 
     fun getWeather() {
         useCase.get(
             onSuccess = { weather ->
-                uiState = WeatherUiState.Display(weather = weather, showErrorDialog = false)
+                _uiState.value = WeatherUiState.Display(weather = weather, showErrorDialog = false)
             },
             onFailure = { _ ->
-                uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = true)
+                _uiState.value = (_uiState.value as? WeatherUiState.Display)?.copy(showErrorDialog = true)
                     ?: WeatherUiState.Display(weather = null, showErrorDialog = true)
             }
         )
     }
 
     fun dismissErrorDialog() {
-        uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: uiState
+        _uiState.value = (_uiState.value as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: _uiState.value
     }
 
     companion object {

@@ -40,7 +40,6 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.49")
     ksp("com.google.dagger:hilt-android-compiler:2.49")
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.robolectric:robolectric:4.10.3")
     testImplementation("io.mockk:mockk:1.13.7")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.10")
 }

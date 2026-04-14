@@ -1,34 +1,28 @@
 package jp.co.yumemi.use_case.weather
 
-import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.every
 import io.mockk.mockk
 import jp.co.yumemi.model.error.ApiError
 import jp.co.yumemi.model.weather.Weather
+import jp.co.yumemi.repository.weather.WeatherRepository
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import kotlin.random.Random
 
-@RunWith(RobolectricTestRunner::class)
 class GetWeatherUseCaseTest {
 
-    private val random = mockk<Random>()
+    private  val repository = mockk<WeatherRepository>()
 
     private lateinit var getWeatherUseCase: GetWeatherUseCase
 
     @Before
     fun setup() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        getWeatherUseCase = GetWeatherUseCase(context, random)
+        getWeatherUseCase = GetWeatherUseCase(repository)
     }
 
     @Test
     fun successGetWeather() {
-        every { random.nextInt(any(), any()) } returns 0
-        every { random.nextInt(any()) } returns Weather.SUNNY.ordinal
+        every { repository.getWeather() } returns Weather.SUNNY
         getWeatherUseCase.get(
             onSuccess = { value ->
                 assertEquals(Weather.SUNNY, value)
@@ -39,7 +33,7 @@ class GetWeatherUseCaseTest {
 
     @Test
     fun failedGetWeather() {
-        every { random.nextInt(any(), any()) } returns 4
+        every { repository.getWeather() } throws ApiError.UnknownException(Throwable())
         getWeatherUseCase.get(
             onSuccess = {},
             onFailure = {

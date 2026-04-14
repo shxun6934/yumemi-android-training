@@ -16,5 +16,5 @@ object YumemiWeatherModule {
     fun provideContext(@ApplicationContext context: Context): Context = context
 
     @Provides
-    fun provideYumemiWeatherApi(context: Context): YumemiWeather = YumemiWeather(context)
+    fun provideYumemiWeather(context: Context): YumemiWeather = YumemiWeather(context)
 }

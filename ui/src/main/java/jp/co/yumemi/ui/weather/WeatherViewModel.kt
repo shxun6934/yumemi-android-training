@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class WeatherViewModel(
     private val useCase: GetWeatherUseCase
 ): ViewModel() {
-    private var _uiState: MutableStateFlow<WeatherUiState> = MutableStateFlow(WeatherUiState.Loading)
+    private val _uiState: MutableStateFlow<WeatherUiState> = MutableStateFlow(WeatherUiState.Loading)
     val uiState: StateFlow<WeatherUiState> get() = _uiState.asStateFlow()
 
     fun getWeather() {

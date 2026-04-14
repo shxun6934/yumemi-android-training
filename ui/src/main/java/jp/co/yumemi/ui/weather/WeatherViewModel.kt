@@ -1,45 +1,49 @@
 package jp.co.yumemi.ui.weather
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.Saver
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
+import androidx.lifecycle.viewmodel.compose.saveable
+import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.use_case.weather.GetWeatherUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class WeatherViewModel(
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val useCase: GetWeatherUseCase
 ): ViewModel() {
-    var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
-        private set
+
+    @OptIn(SavedStateHandleSaveableApi::class)
+    private val _uiState: MutableStateFlow<WeatherUiState> = savedStateHandle.saveable(
+        key = "uiState",
+        saver = Saver(
+            save = { it.value },
+            restore = { MutableStateFlow(it) }
+        ),
+        init = {
+            MutableStateFlow(WeatherUiState.Loading)
+        }
+    )
+    val uiState: StateFlow<WeatherUiState> get() = _uiState.asStateFlow()
 
     fun getWeather() {
         useCase.get(
             onSuccess = { weather ->
-                uiState = WeatherUiState.Display(weather = weather, showErrorDialog = false)
+                _uiState.value = WeatherUiState.Display(weather = weather, showErrorDialog = false)
             },
             onFailure = { _ ->
-                uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = true)
+                _uiState.value = (_uiState.value as? WeatherUiState.Display)?.copy(showErrorDialog = true)
                     ?: WeatherUiState.Display(weather = null, showErrorDialog = true)
             }
         )
     }
 
     fun dismissErrorDialog() {
-        uiState = (uiState as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: uiState
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                val application = extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
-                    ?: throw IllegalStateException("Application not found in extras")
-
-                return WeatherViewModel(
-                    useCase = GetWeatherUseCase(context = application)
-                ) as T
-            }
-        }
+        _uiState.value = (_uiState.value as? WeatherUiState.Display)?.copy(showErrorDialog = false) ?: _uiState.value
     }
 }

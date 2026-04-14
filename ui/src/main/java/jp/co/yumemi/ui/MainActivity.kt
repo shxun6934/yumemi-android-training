@@ -17,6 +17,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.ui.design.WeatherTheme
 import jp.co.yumemi.ui.weather.WeatherViewModel
@@ -32,6 +35,7 @@ import jp.co.yumemi.ui.weather.WeatherErrorDialog
 import jp.co.yumemi.ui.weather.WeatherInfo
 import jp.co.yumemi.ui.weather.WeatherUiState
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +50,9 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun WeatherTopScreen(
-        viewModel: WeatherViewModel = viewModel(factory = WeatherViewModel.Factory)
+        viewModel: WeatherViewModel = viewModel()
     ) {
-        val uiState = viewModel.uiState
+        val uiState by viewModel.uiState.collectAsState()
         val systemUiController = rememberSystemUiController()
         val statusBarColor = MaterialTheme.colors.primaryVariant
 
@@ -68,7 +72,9 @@ class MainActivity : ComponentActivity() {
         )
 
         LaunchedEffect(true) {
-            viewModel.getWeather()
+            if(uiState is WeatherUiState.Loading) {
+                viewModel.getWeather()
+            }
         }
     }
 

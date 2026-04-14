@@ -11,7 +11,7 @@ import org.junit.Test
 
 class GetWeatherUseCaseTest {
 
-    private  val repository = mockk<WeatherRepository>()
+    private val repository = mockk<WeatherRepository>()
 
     private lateinit var getWeatherUseCase: GetWeatherUseCase
 

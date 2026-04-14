@@ -19,7 +19,7 @@ class WeatherViewModel @Inject constructor(
 ): ViewModel() {
 
     @OptIn(SavedStateHandleSaveableApi::class)
-    private var _uiState: MutableStateFlow<WeatherUiState> = savedStateHandle.saveable(
+    private val _uiState: MutableStateFlow<WeatherUiState> = savedStateHandle.saveable(
         key = "uiState",
         saver = Saver(
             save = { it.value },

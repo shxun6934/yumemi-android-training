@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
         )
 
         LaunchedEffect(true) {
-            if(uiState is WeatherUiState.Loading) {
+            if (uiState is WeatherUiState.Loading) {
                 viewModel.getWeather()
             }
         }

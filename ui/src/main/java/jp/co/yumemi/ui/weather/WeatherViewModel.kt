@@ -14,6 +14,10 @@ class WeatherViewModel(
     private val _uiState: MutableStateFlow<WeatherUiState> = MutableStateFlow(WeatherUiState.Loading)
     val uiState: StateFlow<WeatherUiState> get() = _uiState.asStateFlow()
 
+    init {
+        getWeather()
+    }
+
     fun getWeather() {
         useCase.get(
             onSuccess = { weather ->

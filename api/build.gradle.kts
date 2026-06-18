@@ -6,6 +6,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -46,6 +47,10 @@ dependencies {
     // Moshi
     implementation("com.squareup.moshi:moshi:1.13.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.49")
+    ksp("com.google.dagger:hilt-android-compiler:2.49")
 
     // Test
     testImplementation("junit:junit:4.13.2")

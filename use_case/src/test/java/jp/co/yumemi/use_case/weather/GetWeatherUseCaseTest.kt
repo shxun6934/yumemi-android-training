@@ -1,11 +1,13 @@
 package jp.co.yumemi.use_case.weather
 
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import jp.co.yumemi.model.error.ApiError
 import jp.co.yumemi.model.weather.Weather
 import jp.co.yumemi.repository.weather.WeatherRepository
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
@@ -21,8 +23,8 @@ class GetWeatherUseCaseTest {
     }
 
     @Test
-    fun successGetWeather() {
-        every { repository.getWeather() } returns Weather.SUNNY
+    fun successGetWeather() = runTest {
+        coEvery { repository.getWeather() } returns Weather.SUNNY
         getWeatherUseCase.get(
             onSuccess = { value ->
                 assertEquals(Weather.SUNNY, value)
@@ -32,8 +34,8 @@ class GetWeatherUseCaseTest {
     }
 
     @Test
-    fun failedGetWeather() {
-        every { repository.getWeather() } throws ApiError.UnknownException(Throwable())
+    fun failedGetWeather() = runTest {
+        coEvery { repository.getWeather() } throws ApiError.UnknownException(Throwable())
         getWeatherUseCase.get(
             onSuccess = {},
             onFailure = {

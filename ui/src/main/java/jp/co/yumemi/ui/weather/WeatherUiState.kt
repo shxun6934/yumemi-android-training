@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
 @SuppressLint("ParcelCreator")
 @Parcelize
 sealed interface WeatherUiState : Parcelable {
-    data object Loading : WeatherUiState
+    data class Loading(val weather: Weather?) : WeatherUiState
     data class Display(val weather: Weather?, val showErrorDialog: Boolean) : WeatherUiState
 }

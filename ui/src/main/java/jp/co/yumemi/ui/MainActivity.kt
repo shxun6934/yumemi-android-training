@@ -3,13 +3,17 @@ package jp.co.yumemi.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -34,6 +38,7 @@ import jp.co.yumemi.ui.weather.ActionButtons
 import jp.co.yumemi.ui.weather.WeatherErrorDialog
 import jp.co.yumemi.ui.weather.WeatherInfo
 import jp.co.yumemi.ui.weather.WeatherUiState
+import jp.co.yumemi.ui.weather.WeatherUiStateExtension.weather
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -86,6 +91,9 @@ class MainActivity : ComponentActivity() {
         onDismiss: () -> Unit,
         onConfirm: () -> Unit = onClickReload
     ) {
+        val weather = uiState.weather()
+        val showErrorDialog = (uiState as? WeatherUiState.Display)?.showErrorDialog ?: false
+
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -95,35 +103,45 @@ class MainActivity : ComponentActivity() {
                 )
             }
         ) { padding ->
-            (uiState as? WeatherUiState.Display)?.let {
-                val weather = it.weather
-                val showErrorDialog = it.showErrorDialog
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                WeatherInfo(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
+                    weather = weather
+                )
+                Spacer(modifier = Modifier.height(80.dp))
+                ActionButtons(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
+                    onReload = onClickReload,
+                    onNext = onClickNext
+                )
+            }
 
+            if (showErrorDialog) {
+                WeatherErrorDialog(
+                    onDismiss = onDismiss,
+                    onConfirm = onConfirm
+                )
+            }
+
+            if (uiState is WeatherUiState.Loading) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(padding)
+                        .background(color = MaterialTheme.colors.background.copy(alpha = 0.5f)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WeatherInfo(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f),
-                        weather = weather
-                    )
-                    Spacer(modifier = Modifier.height(80.dp))
-                    ActionButtons(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f),
-                        onReload = onClickReload,
-                        onNext = onClickNext
-                    )
-                }
-
-                if (showErrorDialog) {
-                    WeatherErrorDialog(
-                        onDismiss = onDismiss,
-                        onConfirm = onConfirm
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(80.dp)
                     )
                 }
             }
@@ -134,6 +152,21 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun PreviewWeatherTopContent() {
         val uiState = WeatherUiState.Display(weather = Weather.SUNNY, showErrorDialog = false)
+
+        WeatherTheme {
+            WeatherTopContent(
+                uiState = uiState,
+                onClickReload = {},
+                onClickNext = {},
+                onDismiss = {}
+            )
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun PreviewLoadingWeatherTopContent() {
+        val uiState = WeatherUiState.Loading(weather = Weather.SUNNY)
 
         WeatherTheme {
             WeatherTopContent(

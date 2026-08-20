@@ -9,8 +9,8 @@ class WeatherRepository @Inject constructor(
     private val weather: YumemiWeather
 ) {
 
-    fun getWeather(): Weather = try {
-        weather.fetchThrowsWeather().toModel()
+    suspend fun getWeather(): Weather = try {
+        weather.fetchWeatherAsync().toModel()
     } catch (e: Throwable) {
         throw ApiError.UnknownException(e)
     }

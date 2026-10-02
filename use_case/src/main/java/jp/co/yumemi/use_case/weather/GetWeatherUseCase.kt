@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetWeatherUseCase @Inject constructor(
     private val repository: WeatherRepository
 ) {
-    fun get(
+    suspend fun get(
         onSuccess: (Weather) -> Unit,
         onFailure: (Throwable) -> Unit
     ) {

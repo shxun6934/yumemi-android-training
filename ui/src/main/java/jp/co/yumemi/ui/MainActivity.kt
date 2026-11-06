@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.yumemi.model.weather.Weather
+import jp.co.yumemi.model.weather.WeatherResponse
 import jp.co.yumemi.ui.design.WeatherTheme
 import jp.co.yumemi.ui.weather.WeatherViewModel
 import jp.co.yumemi.ui.weather.ActionButtons
@@ -39,6 +39,7 @@ import jp.co.yumemi.ui.weather.WeatherErrorDialog
 import jp.co.yumemi.ui.weather.WeatherInfo
 import jp.co.yumemi.ui.weather.WeatherUiState
 import jp.co.yumemi.ui.weather.WeatherUiStateExtension.weather
+import kotlinx.serialization.InternalSerializationApi
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(InternalSerializationApi::class)
     @Composable
     private fun WeatherTopScreen(
         viewModel: WeatherViewModel = viewModel()
@@ -83,6 +85,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(InternalSerializationApi::class)
     @Composable
     private fun WeatherTopContent(
         uiState: WeatherUiState,
@@ -148,10 +151,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(InternalSerializationApi::class)
     @Preview
     @Composable
     private fun PreviewWeatherTopContent() {
-        val uiState = WeatherUiState.Display(weather = Weather.SUNNY, showErrorDialog = false)
+        val uiState = WeatherUiState.Display(
+            weather = WeatherResponse(
+                weather = Weather.SUNNY,
+                maxTemp = 30,
+                minTemp = 25,
+                date = "2020-04-01T12:00",
+                area = "東京"
+            ),
+            showErrorDialog = false
+        )
 
         WeatherTheme {
             WeatherTopContent(
@@ -163,10 +176,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(InternalSerializationApi::class)
     @Preview
     @Composable
     private fun PreviewLoadingWeatherTopContent() {
-        val uiState = WeatherUiState.Loading(weather = Weather.SUNNY)
+        val uiState = WeatherUiState.Loading(weather = null)
 
         WeatherTheme {
             WeatherTopContent(

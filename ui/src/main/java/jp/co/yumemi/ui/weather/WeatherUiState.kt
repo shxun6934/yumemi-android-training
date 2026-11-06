@@ -1,13 +1,15 @@
 package jp.co.yumemi.ui.weather
 
-import android.annotation.SuppressLint
-import android.os.Parcelable
-import jp.co.yumemi.model.weather.Weather
-import kotlinx.parcelize.Parcelize
+import jp.co.yumemi.model.weather.WeatherResponse
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.Serializable
 
-@SuppressLint("ParcelCreator")
-@Parcelize
-sealed interface WeatherUiState : Parcelable {
-    data class Loading(val weather: Weather?) : WeatherUiState
-    data class Display(val weather: Weather?, val showErrorDialog: Boolean) : WeatherUiState
+@InternalSerializationApi
+@Serializable
+sealed class WeatherUiState {
+    @Serializable
+    data class Loading(val weather: WeatherResponse?) : WeatherUiState()
+
+    @Serializable
+    data class Display(val weather: WeatherResponse?, val showErrorDialog: Boolean) : WeatherUiState()
 }

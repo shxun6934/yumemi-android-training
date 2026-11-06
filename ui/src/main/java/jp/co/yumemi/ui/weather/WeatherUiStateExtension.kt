@@ -1,9 +1,11 @@
 package jp.co.yumemi.ui.weather
 
-import jp.co.yumemi.model.weather.Weather
+import jp.co.yumemi.model.weather.WeatherResponse
+import kotlinx.serialization.InternalSerializationApi
 
 object WeatherUiStateExtension {
-    fun WeatherUiState.weather(): Weather? = when (this) {
+    @OptIn(InternalSerializationApi::class)
+    fun WeatherUiState.weather(): WeatherResponse? = when (this) {
         is WeatherUiState.Display -> weather
         is WeatherUiState.Loading -> weather
     }

@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -17,19 +19,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jp.co.yumemi.model.weather.Weather
+import jp.co.yumemi.model.weather.WeatherResponse
 import jp.co.yumemi.ui.R
 import jp.co.yumemi.ui.design.WeatherTheme
 
 @Composable
 fun WeatherInfo(
     modifier: Modifier = Modifier,
-    weather: Weather?
+    weather: WeatherResponse?
 ) {
     Column(modifier = modifier) {
         if (weather != null) {
+            Text(
+                text = weather.area,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                style = MaterialTheme.typography.h4,
+                textAlign = TextAlign.Center
+            )
             Image(
                 painter = painterResource(
-                    id = when (weather) {
+                    id = when (weather.weather) {
                         Weather.SUNNY -> R.drawable.ic_sunny
                         Weather.CLOUDY -> R.drawable.ic_cloudy
                         Weather.RAINY -> R.drawable.ic_rainy
@@ -43,7 +53,7 @@ fun WeatherInfo(
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(
                     color = colorResource(
-                        id = when (weather) {
+                        id = when (weather.weather) {
                             Weather.SUNNY -> R.color.sunny
                             Weather.CLOUDY -> R.color.cloudy
                             Weather.RAINY -> R.color.rainy
@@ -57,15 +67,17 @@ fun WeatherInfo(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "text1",
+                    text = stringResource(R.string.temperature, weather.minTemp),
                     modifier = Modifier
                         .weight(1f),
+                    color = Color.Blue,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "text2",
+                    text = stringResource(R.string.temperature, weather.maxTemp),
                     modifier = Modifier
                         .weight(1f),
+                    color = Color.Red,
                     textAlign = TextAlign.Center
                 )
             }
@@ -84,7 +96,13 @@ fun WeatherInfo(
 private fun PreviewSunnyWeatherInfo() {
     WeatherTheme {
         WeatherInfo(
-            weather = Weather.SUNNY
+            weather = WeatherResponse(
+                weather = Weather.SUNNY,
+                maxTemp = 30,
+                minTemp = 25,
+                date = "2020-04-01T12:00",
+                area = "東京"
+            )
         )
     }
 }
@@ -94,7 +112,13 @@ private fun PreviewSunnyWeatherInfo() {
 private fun PreviewCloudyWeatherInfo() {
     WeatherTheme {
         WeatherInfo(
-            weather = Weather.CLOUDY
+            weather = WeatherResponse(
+                weather = Weather.CLOUDY,
+                maxTemp = 27,
+                minTemp = 16,
+                date = "2020-04-01T12:00",
+                area = "神奈川"
+            )
         )
     }
 }
@@ -104,7 +128,13 @@ private fun PreviewCloudyWeatherInfo() {
 private fun PreviewRainyWeatherInfo() {
     WeatherTheme {
         WeatherInfo(
-            weather = Weather.RAINY
+            weather = WeatherResponse(
+                weather = Weather.RAINY,
+                maxTemp = 17,
+                minTemp = 14,
+                date = "2020-04-01T12:00",
+                area = "埼玉"
+            )
         )
     }
 }
@@ -114,7 +144,13 @@ private fun PreviewRainyWeatherInfo() {
 private fun PreviewSnowWeatherInfo() {
     WeatherTheme {
         WeatherInfo(
-            weather = Weather.SNOW
+            weather = WeatherResponse(
+                weather = Weather.SNOW,
+                maxTemp = 4,
+                minTemp = -2,
+                date = "2020-04-01T12:00",
+                area = "千葉"
+            )
         )
     }
 }

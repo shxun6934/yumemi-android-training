@@ -8,4 +8,5 @@
     <string name="error_message">エラーが発生しました。</string>
     <string name="close">Close</string>
     <string name="reload">Reload</string>
+    <string name="temperature">%1$d℃</string>
 </resources>
